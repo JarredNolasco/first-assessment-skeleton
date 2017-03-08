@@ -6,6 +6,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +21,9 @@ public class ClientHandler implements Runnable {
 	private Logger log = LoggerFactory.getLogger(ClientHandler.class);
 
 	private Socket socket;
-
+	
+	private ArrayList<String> mylist = (ArrayList<String>) Collections.synchronizedList(new ArrayList<String>());
+	
 	public ClientHandler(Socket socket) {
 		super();
 		this.socket = socket;
@@ -33,13 +39,16 @@ public class ClientHandler implements Runnable {
 			while (!socket.isClosed()) {
 				String raw = reader.readLine(); //reads line with javascript
 				Message message = mapper.readValue(raw, Message.class);
-				log.info(message.getContents());
+				//log.info(message.getContents());
 				switch (message.getCommand()) {		// where commands are handled 
 					case "connect":
 						log.info("user <{}> connected", message.getUsername());
 						//log.info("test"); logs info into the logger in java log
 //						writer.write("ayyy this is a test"); 
 //						writer.flush();
+						//USERNAME WILL BE ADDDED TO THE COLLECTION HERE WHEN IT CONNECTS
+						myMap.put(message.getUsername(), message.getUsername());
+						log.info("Size of Map" + myMap.size());
 						break;
 					case "disconnect":
 						log.info("user <{}> disconnected", message.getUsername());

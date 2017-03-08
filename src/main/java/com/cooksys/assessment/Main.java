@@ -24,7 +24,7 @@ public class Main {
 		try {
 			done.get();
 			executor.shutdown();
-			executor.awaitTermination(5, TimeUnit.SECONDS);
+			executor.awaitTermination(10, TimeUnit.SECONDS);
 		} catch (InterruptedException | ExecutionException e) {
 			log.error("Something went wrong :/", e);
 		}
