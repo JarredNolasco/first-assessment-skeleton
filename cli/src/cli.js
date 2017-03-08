@@ -7,16 +7,21 @@ export const cli = vorpal()
 
 let username
 let server
+let hostName
+let portNum
 
 cli
   .delimiter(cli.chalk['yellow']('ftd~$'))
 
 cli
-  .mode('connect <username>')
-  .delimiter(cli.chalk['green']('connected>'))
+  .mode('Connect <username>,<host>,<port> ','Connect To Server With Username,Host And Port Arguments')
+  .delimiter(cli.chalk['green']('connected>'))// where things are written to the console in the javascript with the action
   .init(function (args, callback) {
     username = args.username
-    server = connect({ host: 'localhost', port: 8080 }, () => {
+    hostName = args.host
+    portNum= args.port
+      //server = connect({ host: 'localhost', port: 1235 }, () => {
+      server = connect({ host: hostName, port: portNum }, () => {
       server.write(new Message({ username, command: 'connect' }).toJSON() + '\n')
       callback()
     })
@@ -37,7 +42,19 @@ cli
       server.end(new Message({ username, command }).toJSON() + '\n')
     } else if (command === 'echo') {
       server.write(new Message({ username, command, contents }).toJSON() + '\n')
-    } else {
+    } else if(command === 'broadcast')
+    {
+
+    server.write(new Message({ username, command, contents }).toJSON() + '\n')
+    }
+    else if(command === 'whisper')
+    {
+      server.write(new Message({ username, command, contents }).toJSON() + '\n')
+    }else if(command === 'getall')
+    {
+      server.write(new Message({ username, command, contents }).toJSON() + '\n')
+    }
+    else {
       this.log(`Command <${command}> was not recognized`)
     }
 

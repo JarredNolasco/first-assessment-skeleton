@@ -1,7 +1,7 @@
 package com.cooksys.assessment.model;
 
 public class Message {
-
+	// Only make changes to timestamp
 	private String username;
 	private String command;
 	private String contents;

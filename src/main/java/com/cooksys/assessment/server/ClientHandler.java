@@ -22,7 +22,7 @@ public class ClientHandler implements Runnable {
 		super();
 		this.socket = socket;
 	}
-
+				// Most of the changes will happen here. 
 	public void run() {
 		try {
 
@@ -31,12 +31,15 @@ public class ClientHandler implements Runnable {
 			PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 
 			while (!socket.isClosed()) {
-				String raw = reader.readLine();
+				String raw = reader.readLine(); //reads line with javascript
 				Message message = mapper.readValue(raw, Message.class);
-
-				switch (message.getCommand()) {
+				log.info(message.getContents());
+				switch (message.getCommand()) {		// where commands are handled 
 					case "connect":
 						log.info("user <{}> connected", message.getUsername());
+						//log.info("test"); logs info into the logger in java log
+//						writer.write("ayyy this is a test"); 
+//						writer.flush();
 						break;
 					case "disconnect":
 						log.info("user <{}> disconnected", message.getUsername());
@@ -44,9 +47,19 @@ public class ClientHandler implements Runnable {
 						break;
 					case "echo":
 						log.info("user <{}> echoed message <{}>", message.getUsername(), message.getContents());
-						String response = mapper.writeValueAsString(message);
+						String response = mapper.writeValueAsString(message); // how to read things from server 
+						log.info(response);
 						writer.write(response);
 						writer.flush();
+						break;
+					case "broadcast":
+						log.info(message.getUsername());
+						break;
+					case "whisper":
+						log.info("Whisper To Other Users works");
+						break;
+					case "getall":
+						log.info("Get All Users works");
 						break;
 				}
 			}
