@@ -35,11 +35,11 @@ cli
     })
   })
   .action(function (input, callback) {
-    console.log(input);
+
     const [ command, ...rest ] = words(input, /[^, ]+/g)
-    console.log(command);
+
     const contents = rest.join(' ')
-    console.log(command);
+
     if (command === 'disconnect') {
       server.end(new Message({ username, command }).toJSON() + '\n')
     } else if (command === 'echo') {

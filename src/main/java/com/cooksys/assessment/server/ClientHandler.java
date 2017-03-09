@@ -50,7 +50,7 @@ public class ClientHandler implements Runnable {
 
 						test.put(message.getUsername(), socket);
 						//log.info(message.getUsername());
-						log.info("Size of Map " + test.size());
+						//log.info("Size of Map " + test.size());
 						break;
 					case "disconnect":
 						log.info("user <{}> disconnected", message.getUsername());
@@ -77,13 +77,20 @@ public class ClientHandler implements Runnable {
 						break;
 					case "@":
 						String whoToWhisperTo = message.getContents();
-						log.info(whoToWhisperTo);
+						//log.info(whoToWhisperTo.length()+""+whoToWhisperTo);
+						
+						
 						for (String key : test.keySet()) {
 							//log.info(key + ""+ test.get(key));
-							log.info(arg0);
-							if (whoToWhisperTo == key)
+						//	log.info(key.length()+""+ key);
+							if (key.equals(whoToWhisperTo))
 							{
-								log.info("You have whispered to the right person");
+								PrintWriter writer2 = new PrintWriter(new OutputStreamWriter(((Socket) test.get(key)).getOutputStream()));
+								//message.setContents("Testing Broadcast");
+								log.info(message.getContents());
+								String response2 = mapper.writeValueAsString(message);
+								writer2.write(response2);
+								writer2.flush();
 							}
 						}
 						
