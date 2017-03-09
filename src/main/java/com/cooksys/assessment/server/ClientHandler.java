@@ -46,16 +46,29 @@ public class ClientHandler implements Runnable {
 				//log.info(message.getContents());
 				switch (message.getCommand()) {		// where commands are handled 
 					case "connect":
+						
 						log.info("user <{}> connected", message.getUsername());
-
 						test.put(message.getUsername(), socket);
+						
+							
+							for (Object value : test.values()) {
+								PrintWriter writer6 = new PrintWriter(new OutputStreamWriter(((Socket) value).getOutputStream()));
+								//message.setContents("Testing Broadcast");
+								log.info(message.getUsername());
+								String response4 = mapper.writeValueAsString(message);
+								writer6.write(response4);
+								writer6.flush();
+							}
+							
+						
+						
 						//log.info(message.getUsername());
-						//log.info("Size of Map " + test.size());
+						
 						break;
 					case "disconnect":
 						log.info("user <{}> disconnected", message.getUsername());
 						test.remove(message.getUsername());
-						log.info("Size of Map " + test.size());
+						//log.info("Size of Map " + test.size());
 						this.socket.close();
 						break;
 					case "echo":
@@ -91,6 +104,8 @@ public class ClientHandler implements Runnable {
 								String response2 = mapper.writeValueAsString(message);
 								writer2.write(response2);
 								writer2.flush();
+								
+								// still have to manage the string and display it correctly. 
 							}
 						}
 						

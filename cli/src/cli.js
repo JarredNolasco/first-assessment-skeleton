@@ -27,7 +27,9 @@ cli
     })
 
     server.on('data', (buffer) => {
+
       this.log(Message.fromJSON(buffer).toString())
+
     })
 
     server.on('end', () => {

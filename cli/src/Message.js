@@ -20,6 +20,19 @@ export class Message {
   }
 
   toString () {
-    return this.contents
+    if (this.contents != null)
+    {
+        return this.contents
+    }
+
+    if (this.username!= null)
+    {
+      return this.username
+    }
+
+    if (this.timeStamp!= null)
+    {
+      return this.timeStamp
+    }
   }
 }
