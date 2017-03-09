@@ -35,9 +35,11 @@ cli
     })
   })
   .action(function (input, callback) {
-    const [ command, ...rest ] = words(input)
+    console.log(input);
+    const [ command, ...rest ] = words(input, /[^, ]+/g)
+    console.log(command);
     const contents = rest.join(' ')
-
+    console.log(command);
     if (command === 'disconnect') {
       server.end(new Message({ username, command }).toJSON() + '\n')
     } else if (command === 'echo') {
@@ -47,7 +49,7 @@ cli
 
     server.write(new Message({ username, command, contents }).toJSON() + '\n')
     }
-    else if(command === 'whisper')
+    else if(command === '@')
     {
       server.write(new Message({ username, command, contents }).toJSON() + '\n')
     }else if(command === 'getall')

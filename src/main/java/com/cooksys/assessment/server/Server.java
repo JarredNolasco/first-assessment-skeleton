@@ -28,7 +28,9 @@ public class Server implements Runnable {
 			while (true) {
 				Socket socket = ss.accept();
 				ClientHandler handler = new ClientHandler(socket);
+				// List of the handlers. 
 				executor.execute(handler);
+				
 			}
 		} catch (IOException e) {
 			log.error("Something went wrong :/", e);
