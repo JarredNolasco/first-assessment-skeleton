@@ -20,16 +20,6 @@ export class Message {
   }
 
   toString () {
-    // if (this.username!= null)
-    // {
-    //   return this.username
-    // }
-    // if (this.contents != null)
-    // {
-    //     return this.contents
-    // }
-    //
-
     if(this.command === 'echo')
     return `${this.timestamp} <${this.username}> (echo): ${this.contents}`
 
@@ -43,7 +33,7 @@ export class Message {
     return this.timestamp
 
     if(this.command === 'users')
-    return `${this.timestamp} currently connected users : <${this.username}>`
+    return `${this.timestamp} currently connected users : <${this.contents}>`
 
     if(this.command === '@')
     return `${this.timestamp} <${this.username}> (whisper): ${this.contents}`

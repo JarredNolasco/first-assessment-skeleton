@@ -10,6 +10,7 @@ let server
 let hostName
 let portNum
 let timestamp = ''
+let lastCommand = 'test'
 
 cli
   .delimiter(cli.chalk['yellow']('ftd~$'))
@@ -43,7 +44,8 @@ cli
 
     const contents = rest.join(' ')
 
-
+    lastCommand = command
+    console.log(lastCommand);
 
     if (command === 'disconnect') {
       server.end(new Message({ username, command }).toJSON() + '\n')
@@ -64,6 +66,7 @@ cli
     else {
       this.log(`Command <${command}> was not recognized`)
     }
+
 
     callback()
   })

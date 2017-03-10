@@ -34,7 +34,7 @@ public class ClientHandler implements Runnable {
 		super();
 		this.socket = socket;
 	}
-				// Most of the changes will happen here. 
+				
 	public void run() {
 		try {
 			
@@ -70,7 +70,7 @@ public class ClientHandler implements Runnable {
 							
 						
 						
-						//log.info(message.getUsername());
+						
 						
 						break;
 					case "disconnect":
@@ -143,12 +143,15 @@ public class ClientHandler implements Runnable {
 						String listOfUsers ="";
 						for (String key : test.keySet()) {
 						    //log.info(key+" " + test.get(key));
-							listOfUsers = listOfUsers + "" + key;
+							listOfUsers = listOfUsers + key + "\n";
 							log.info(listOfUsers);
 						    
 						    // figure out how to output this to the javascript
 						}
+						Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+						message.setTimestamp(timestamp.toString());
 						message.setContents(listOfUsers);
+						log.info(listOfUsers);
 						String response2 = mapper.writeValueAsString(message);
 						writer.write(response2);
 						writer.flush();
