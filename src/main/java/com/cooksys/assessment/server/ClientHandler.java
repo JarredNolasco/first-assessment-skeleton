@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -18,15 +17,15 @@ import com.cooksys.assessment.model.Message;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.sql.Timestamp;
-import java.time.Instant;
+
 
 public class ClientHandler implements Runnable {
 	private Logger log = LoggerFactory.getLogger(ClientHandler.class);
 	// client 
 	private Socket socket;
-	private ServerSocket ServerSocket;
 	
-	private static final ConcurrentMap<String, Object> test = new ConcurrentHashMap<String, Object>();
+	
+	private static final ConcurrentMap<String, Object> userMap = new ConcurrentHashMap<String, Object>();
 
 	
 	public ClientHandler(Socket socket) {
@@ -43,53 +42,41 @@ public class ClientHandler implements Runnable {
 			PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 
 			while (!socket.isClosed()) {
-				String raw = reader.readLine(); //reads line with javascript
+				String raw = reader.readLine();
 				Message message = mapper.readValue(raw, Message.class);
 				
-				//log.info(message.getContents());
-				switch (message.getCommand()) {		// where commands are handled 
+				switch (message.getCommand()) {		
 					case "connect":
 						
 						log.info("user <{}> connected", message.getUsername());
-						test.put(message.getUsername(), socket);
-						
-							
-							for (Object value : test.values()) {
-								PrintWriter writer6 = new PrintWriter(new OutputStreamWriter(((Socket) value).getOutputStream())); // Need new writers for all the different connects 
-								//message.setContents("Testing Broadcast");
-								//log.info(message.getUsername());
+						userMap.put(message.getUsername(), socket);
+					
+							for (Object value : userMap.values()) {
+								PrintWriter connectWriter = new PrintWriter(new OutputStreamWriter(((Socket) value).getOutputStream())); 
 								Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 								message.setTimestamp(timestamp.toString());
 								message.setContents("connect");
 								log.info(timestamp.toString());
 								String response = mapper.writeValueAsString(message);
-								writer6.write(response);
-								writer6.flush();
+								connectWriter.write(response);
+								connectWriter.flush();
 							}
-							
-						
-						
-						
 						
 						break;
 					case "disconnect":
 						
 						log.info("user <{}> disconnected", message.getUsername());
-						test.remove(message.getUsername());					
-						//log.info("Size of Map " + test.size());
+						userMap.remove(message.getUsername());					
 						this.socket.close();
 						
-						for (Object value : test.values()) {
-							PrintWriter writer7 = new PrintWriter(new OutputStreamWriter(((Socket) value).getOutputStream()));
-							//message.setContents("Testing Broadcast");
-							//log.info(message.getUsername());
+						for (Object value : userMap.values()) {
+							PrintWriter disconnectWriter = new PrintWriter(new OutputStreamWriter(((Socket) value).getOutputStream()));
 							Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 							message.setTimestamp(timestamp.toString());
 							message.setContents("disconnect");
-							
 							String response = mapper.writeValueAsString(message);
-							writer7.write(response);
-							writer7.flush();
+							disconnectWriter.write(response);
+							disconnectWriter.flush();
 						}
 						
 						break;
@@ -97,68 +84,52 @@ public class ClientHandler implements Runnable {
 						log.info("user <{}> echoed message <{}>", message.getUsername(), message.getContents());
 						Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 						message.setTimestamp(timestamp.toString());
-						String response = mapper.writeValueAsString(message); // how to read things from server 
-						//log.info(response);
+						String response = mapper.writeValueAsString(message); 
 						writer.write(response);
 						writer.flush();
 						break;
 					case "broadcast":
-						for (Object value : test.values()) {
-							PrintWriter writer2 = new PrintWriter(new OutputStreamWriter(((Socket) value).getOutputStream()));
-							//message.setContents("Testing Broadcast");
+						for (Object value : userMap.values()) {
+							PrintWriter broadcastWriter = new PrintWriter(new OutputStreamWriter(((Socket) value).getOutputStream()));
 							log.info(message.getContents());
 							Timestamp timestamp2 = new Timestamp(System.currentTimeMillis());
 							message.setTimestamp(timestamp2.toString());
 							
 							String response2 = mapper.writeValueAsString(message);
-							writer2.write(response2);
-							writer2.flush();
+							broadcastWriter.write(response2);
+							broadcastWriter.flush();
 						}
 						break;
 					case "@":
-						
-						//log.info(whoToWhisperTo.length()+""+whoToWhisperTo);
 						String mystring = message.getContents();
 						String arr[] = mystring.split(" ", 2);
-
 						String firstWord = arr[0];   
 						String theRest = arr[1];
-						String whoToWhisperTo = firstWord;
-						log.info(firstWord);
-						log.info(theRest);
-						
-						for (String key : test.keySet()) {
+						String whoToWhisperTo = firstWord;	
+						for (String key : userMap.keySet()) {
 							if (key.equals(whoToWhisperTo))
 							{
-								PrintWriter writer2 = new PrintWriter(new OutputStreamWriter(((Socket) test.get(key)).getOutputStream()));
+								PrintWriter atWriter = new PrintWriter(new OutputStreamWriter(((Socket) userMap.get(key)).getOutputStream()));
 								
 								Timestamp timestamp3 = new Timestamp(System.currentTimeMillis());
 								message.setTimestamp(timestamp3.toString());
 								log.info(message.getContents());
 								message.setContents(theRest);
 								String response2 = mapper.writeValueAsString(message);
-								writer2.write(response2);
-								writer2.flush();
-								
-								
+								atWriter.write(response2);
+								atWriter.flush();
 							}
 						}
-						
-						
 						break;
 					case "users":
 						String listOfUsers ="";
-						for (String key : test.keySet()) {
-						    //log.info(key+" " + test.get(key));
+						for (String key : userMap.keySet()) {
 							listOfUsers = listOfUsers + "\n" + key  ;
 							log.info(listOfUsers);
-						    
-						    // figure out how to output this to the javascript
 						}
 						Timestamp timestamp4 = new Timestamp(System.currentTimeMillis());
 						message.setTimestamp(timestamp4.toString());
 						message.setContents(listOfUsers);
-						log.info(listOfUsers);
 						String response2 = mapper.writeValueAsString(message);
 						writer.write(response2);
 						writer.flush();
