@@ -86,7 +86,7 @@ public class ClientHandler implements Runnable {
 							Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 							message.setTimestamp(timestamp.toString());
 							message.setContents("disconnect");
-							//message.setUsername(username);
+							
 							String response = mapper.writeValueAsString(message);
 							writer7.write(response);
 							writer7.flush();
@@ -116,20 +116,26 @@ public class ClientHandler implements Runnable {
 						}
 						break;
 					case "@":
-						String whoToWhisperTo = message.getContents();
-						//log.info(whoToWhisperTo.length()+""+whoToWhisperTo);
 						
+						//log.info(whoToWhisperTo.length()+""+whoToWhisperTo);
+						String mystring = message.getContents();
+						String arr[] = mystring.split(" ", 2);
+
+						String firstWord = arr[0];   
+						String theRest = arr[1];
+						String whoToWhisperTo = firstWord;
+						log.info(firstWord);
+						log.info(theRest);
 						
 						for (String key : test.keySet()) {
-							//log.info(key + ""+ test.get(key));
-						//	log.info(key.length()+""+ key);
 							if (key.equals(whoToWhisperTo))
 							{
 								PrintWriter writer2 = new PrintWriter(new OutputStreamWriter(((Socket) test.get(key)).getOutputStream()));
-								//message.setContents("Testing Broadcast");
+								
 								Timestamp timestamp3 = new Timestamp(System.currentTimeMillis());
 								message.setTimestamp(timestamp3.toString());
 								log.info(message.getContents());
+								message.setContents(theRest);
 								String response2 = mapper.writeValueAsString(message);
 								writer2.write(response2);
 								writer2.flush();
@@ -144,7 +150,7 @@ public class ClientHandler implements Runnable {
 						String listOfUsers ="";
 						for (String key : test.keySet()) {
 						    //log.info(key+" " + test.get(key));
-							listOfUsers = listOfUsers + key + "\n";
+							listOfUsers = listOfUsers + "\n" + key  ;
 							log.info(listOfUsers);
 						    
 						    // figure out how to output this to the javascript
