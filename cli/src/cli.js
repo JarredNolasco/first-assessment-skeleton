@@ -10,7 +10,7 @@ let server
 let hostName
 let portNum
 let timestamp = ''
-let lastCommand = 'test'
+let lastCommand = 'empty'
 
 cli
   .delimiter(cli.chalk['yellow']('ftd~$'))
@@ -40,12 +40,11 @@ cli
   })
   .action(function (input, callback) {
 
-    const [ command, ...rest ] = words(input, /[^, ]+/g)
+    let [ command, ...rest ] = words(input, /[^, ]+/g)
 
     const contents = rest.join(' ')
 
-    lastCommand = command
-    console.log(lastCommand);
+
 
     if (command === 'disconnect') {
       server.end(new Message({ username, command }).toJSON() + '\n')
@@ -64,9 +63,19 @@ cli
       server.write(new Message({ username, command, contents}).toJSON() + '\n')
     }
     else {
-      this.log(`Command <${command}> was not recognized`)
+      if(lastCommand === 'empty')
+      {
+          this.log(`A command is required`)
+        }
+      else{
+      console.log(lastCommand);
+      command = lastCommand
+        server.write(new Message({ username, command, contents}).toJSON() + '\n')
+      }
     }
 
+    lastCommand = command
+    console.log(lastCommand);
 
     callback()
   })
