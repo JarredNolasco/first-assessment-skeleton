@@ -75,7 +75,7 @@ cli
     }
 
     lastCommand = command
-    console.log(lastCommand);
+    
 
     callback()
   })

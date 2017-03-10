@@ -1,3 +1,5 @@
+const chalk = require('chalk');
+
 export class Message {
   static fromJSON (buffer) {
     return new Message(JSON.parse(buffer.toString()))
@@ -21,22 +23,22 @@ export class Message {
 
   toString () {
     if(this.command === 'echo')
-    return `${this.timestamp} <${this.username}> (echo): ${this.contents}`
+    return (chalk.red) (`${this.timestamp} <${this.username}> (echo): ${this.contents}`)
 
     if(this.command === 'broadcast')
-    return `${this.timestamp} <${this.username}> (all): ${this.contents}`
+    return (chalk.green) (`${this.timestamp} <${this.username}> (all): ${this.contents}`)
 
     if(this.command === 'connect')
-    return `${this.timestamp} <${this.username}> has connected`
+    return (chalk.magenta) (`${this.timestamp} <${this.username}> has connected`)
 
     if(this.command === 'disconnect')
-    return this.timestamp
+    return (chalk.yellow) (`${this.timestamp} <${this.username}> has disconnected`)
 
     if(this.command === 'users')
-    return `${this.timestamp} currently connected users : <${this.contents}>`
+    return (chalk.white) (`${this.timestamp} currently connected users : <${this.contents}>`)
 
     if(this.command === '@')
-    return `${this.timestamp} <${this.username}> (whisper): ${this.contents}`
+    return (chalk.gray) (`${this.timestamp} <${this.username}> (whisper): ${this.contents}`)
 
 
 

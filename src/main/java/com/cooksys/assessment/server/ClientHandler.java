@@ -7,7 +7,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -96,6 +95,8 @@ public class ClientHandler implements Runnable {
 						break;
 					case "echo":
 						log.info("user <{}> echoed message <{}>", message.getUsername(), message.getContents());
+						Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+						message.setTimestamp(timestamp.toString());
 						String response = mapper.writeValueAsString(message); // how to read things from server 
 						//log.info(response);
 						writer.write(response);
@@ -106,8 +107,8 @@ public class ClientHandler implements Runnable {
 							PrintWriter writer2 = new PrintWriter(new OutputStreamWriter(((Socket) value).getOutputStream()));
 							//message.setContents("Testing Broadcast");
 							log.info(message.getContents());
-							Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-							message.setTimestamp(timestamp.toString());
+							Timestamp timestamp2 = new Timestamp(System.currentTimeMillis());
+							message.setTimestamp(timestamp2.toString());
 							
 							String response2 = mapper.writeValueAsString(message);
 							writer2.write(response2);
@@ -126,8 +127,8 @@ public class ClientHandler implements Runnable {
 							{
 								PrintWriter writer2 = new PrintWriter(new OutputStreamWriter(((Socket) test.get(key)).getOutputStream()));
 								//message.setContents("Testing Broadcast");
-								Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-								message.setTimestamp(timestamp.toString());
+								Timestamp timestamp3 = new Timestamp(System.currentTimeMillis());
+								message.setTimestamp(timestamp3.toString());
 								log.info(message.getContents());
 								String response2 = mapper.writeValueAsString(message);
 								writer2.write(response2);
@@ -148,8 +149,8 @@ public class ClientHandler implements Runnable {
 						    
 						    // figure out how to output this to the javascript
 						}
-						Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-						message.setTimestamp(timestamp.toString());
+						Timestamp timestamp4 = new Timestamp(System.currentTimeMillis());
+						message.setTimestamp(timestamp4.toString());
 						message.setContents(listOfUsers);
 						log.info(listOfUsers);
 						String response2 = mapper.writeValueAsString(message);
