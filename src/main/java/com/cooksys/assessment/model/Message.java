@@ -5,7 +5,7 @@ public class Message {
 	private String username;
 	private String command;
 	private String contents;
-	private String timeStamp;
+	private String timestamp;
 
 	public String getUsername() {
 		return username;
@@ -31,12 +31,12 @@ public class Message {
 		this.contents = contents;
 	}
 	
-	public String getTimeStamp() {
-		return timeStamp;
+	public String getTimestamp() {
+		return timestamp;
 	}
 	
-	public void setTimeStamps(String timeStamp) {
-		this.timeStamp = timeStamp;
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
 	}
 
 }

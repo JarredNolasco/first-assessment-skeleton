@@ -9,6 +9,7 @@ let username
 let server
 let hostName
 let portNum
+let timestamp = ''
 
 cli
   .delimiter(cli.chalk['yellow']('ftd~$'))
@@ -42,6 +43,8 @@ cli
 
     const contents = rest.join(' ')
 
+
+
     if (command === 'disconnect') {
       server.end(new Message({ username, command }).toJSON() + '\n')
     } else if (command === 'echo') {
@@ -49,14 +52,14 @@ cli
     } else if(command === 'broadcast')
     {
 
-    server.write(new Message({ username, command, contents }).toJSON() + '\n')
+    server.write(new Message({ username, command, contents}).toJSON() + '\n')
     }
     else if(command === '@')
     {
       server.write(new Message({ username, command, contents }).toJSON() + '\n')
-    }else if(command === 'getall')
+    }else if(command === 'users')
     {
-      server.write(new Message({ username, command, contents }).toJSON() + '\n')
+      server.write(new Message({ username, command, contents}).toJSON() + '\n')
     }
     else {
       this.log(`Command <${command}> was not recognized`)
