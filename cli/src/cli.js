@@ -9,7 +9,6 @@ let username
 let server
 let hostName
 let portNum
-let timestamp = ''
 let lastCommand = 'empty'
 
 cli
@@ -27,7 +26,6 @@ cli
       server.write(new Message({ username, command: 'connect' }).toJSON() + '\n')
       callback()
     })
-
     server.on('data', (buffer) => {
 
       this.log(Message.fromJSON(buffer).toString())
@@ -41,10 +39,7 @@ cli
   .action(function (input, callback) {
 
     let [ command, ...rest ] = words(input, /[^, ]+/g)
-
     const contents = rest.join(' ')
-
-
 
     if (command === 'disconnect') {
       server.end(new Message({ username, command }).toJSON() + '\n')
@@ -68,14 +63,13 @@ cli
           this.log(`A command is required`)
         }
       else{
-      console.log(lastCommand);
       command = lastCommand
         server.write(new Message({ username, command, contents}).toJSON() + '\n')
       }
     }
 
     lastCommand = command
-    
+
 
     callback()
   })
